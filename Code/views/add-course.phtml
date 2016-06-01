@@ -1,0 +1,31 @@
+<div class="add-course-container">
+    <div>
+        <p><?= $this->t('QUIZ_NAME', [], false); ?></p>
+        <?= $this->quiz->name; ?>
+    </div>
+<?php if($this->quiz->active == 1):?>
+    <div>
+        <p><?= $this->t('QUIZ_TYPE', [], false); ?></p>
+        <?= $this->t($this->quiz->type, [], false); ?>
+    </div>
+    <input type="hidden" name="quiz_id" id="quiz_id" value="<?= $this->quiz->id ?>" />
+    <input type="hidden" name="quiz_type_course" id="quiz_type_course" value="<?= $this->quiz->type ?>" />
+    <div>
+        <p>
+            <?= $this->t('CHOOSE_COURSE', [], false); ?>
+        </p>
+        <input type="text" name="add_course" id="add_course" value=""/>
+        <input type="hidden" name="selected_course" id="selected_course" value="" />
+        <div id="suggestionResp"></div>
+        <div id="lectionResp"></div>
+    </div>
+
+    <div>
+        <select name="chooseLessons" class="chooseLessons hide">
+            <option><?= $this->t('SELECT_COURSE', [], false); ?></option>
+        </select>
+    </div>
+</div>
+<?php else:?>
+    <?=$this->t('PLEASE_ACTIVATE_TEST_FIRST', [], false);?>
+<?php endif;?>

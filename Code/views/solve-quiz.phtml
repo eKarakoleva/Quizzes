@@ -1,0 +1,49 @@
+<div id="timer"></div>
+<div id = "<?= $this->quiz_id?>" course_id = "<?= $this->course_id?>" lesson_id = "<?= $this->lesson_id?>" class = "quiz-name"><?= $this->quiz->name ?></div>
+<div><?= $this->quiz->instruction ?></div>
+<form>
+<?php foreach($this->questions as $question){
+
+        $question_id = $question['question']->id;
+        $question_name = $question['question']->question;
+        $question_type = $question['question']->type;
+
+        ?>
+       
+                <div id = "<?= $question_id ?>"><b><?= $question_name ?></b>
+        <?php
+        if (is_array($question['answers']) && !empty($question['answers'])) {
+            foreach ($question['answers'] as $answer) {
+                switch ($question_type) {
+                    case "multichoice":
+                        ?><input id="<?= $answer->id ?>" class = "solve-answers" type="checkbox" style = "display: inline-block; white-space: nowrap;"><?php
+                        echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                        echo('<br>');
+                        break;
+                    case "radio":  
+                        ?><input id="<?= $answer->id ?>" class = "solve-answers" name="<?= $question_id ?>" type="<?= $question_type ?>" value = "<?= $answer->answer ?>" style = "display: inline-block; white-space: nowrap;">
+                        <?php
+                        echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                        echo('<br>');
+                        break;
+                }
+            }
+        }
+        if($question_type == "open" || $question_type == "open-choices"){
+            if(!empty($this->openChoicesLength) && array_key_exists($question_id, $this->openChoicesLength)){
+                $max_length = $this->openChoicesLength[$question_id];
+                ?><textarea class = "solve-open" question-type = "<?= $question_type ?>" maxlength="<?= $max_length+2?>"></textarea><?php
+            }else{
+                ?><textarea class = "solve-open" question-type = "<?= $question_type ?>"></textarea><?php
+            }
+        }
+ ?></div><?php
+}
+?>
+
+<button id = "finishQuiz">FINISH</button>
+</form>
+
+<script>
+        var __timer = '<?=$this->time?>';  
+</script>

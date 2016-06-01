@@ -1,0 +1,77 @@
+<form id="questionForm" action="" method="post" role="form" class="form-horizontal personal-form" data-toggle="validator" data-value_id="<?php echo $this->quiz->id; ?>">
+
+    <div class="form-group  has-feedback">
+        <label for="question_name" class="col-xs-2 control-label"><?php echo $this->t('question name', 0, false); ?></label>
+        <div class="col-xs-9">
+            <input type="text" class="form-control" id="name" name="question" data-q_id="<?php echo isset($this->question->id) ? $this->question->id : 0; ?>" value="<?php echo isset($this->question->question) ? htmlspecialchars($this->question->question) : ''; ?>">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="note" class="col-xs-2 control-label"><?php echo $this->t('Note', 0, false); ?></label>
+        <div class="col-xs-9">
+            <textarea class="form-control" name="note"><?php echo isset($this->question->note) ? htmlspecialchars($this->question->note) : ''; ?></textarea>
+        </div>
+    </div>
+
+    <div class="col-xs-8 btn-group" data-toggle="buttons">
+        <label class="btn btn-default type_change<?php echo (isset($this->question->question_type) && $this->question->question_type == 'open') ? ' active' : ''; ?>" data-value="open">
+            <input type="radio" name="question_type" autocomplete="off" data-value="open"<?php echo (isset($this->question->question_type) && $this->question->question_type == 'open') ? ' checked' : ''; ?>> <?php echo $this->t('Opened', null, false); ?>
+        </label>
+        <label class="btn btn-default type_change<?php echo (!isset($this->question->question_type) || $this->question->question_type != 'open') ? ' active' : ''; ?>" data-value="close">
+            <input type="radio" name="question_type" autocomplete="off" data-value="close"<?php echo (!isset($this->question->question_type) || $this->question->question_type != 'open') ? ' checked' : ''; ?>> <?php echo $this->t('Closed', null, false); ?>
+        </label>
+
+    </div>
+    <div class="col-xs-12"><hr /></div>
+
+    <div class="col-xs-12" id="closed_answers">
+        <?php if ($this->answers) { ?>
+            <?php foreach ($this->answers as $answer_key => $answer) { ?>
+                <div class="form-group  has-feedback"<?php echo!$answer_key ? ' id="new_answer_model"' : ''; ?>>
+                    <label for="answer" class="col-xs-2 control-label"><?php echo $answer_key + 1; ?>.</label>
+                    <div class="col-xs-9">
+                        <input type="text" class="form-control" name="answer" value="<?php echo isset($answer->answer) ? htmlspecialchars($answer->answer) : ''; ?>" data-a_id="<?php echo $answer->id; ?>">
+                    </div><br><br>
+                    <div class="col-xs-8 btn-group" data-toggle="buttons">
+                        <label class="btn btn-default<?php echo $answer->answer_correction == 'no' ? ' active' : ''; ?>" data-value="false">
+                            <input type="radio" name="correct_answer" autocomplete="off"<?php echo $answer->answer_correction == 'no' ? ' checked' : ''; ?>> <?php echo $this->t('Incorrect answer', null, false); ?>
+                        </label>
+                        <label class="btn btn-default<?php echo $answer->answer_correction == 'yes' ? ' active' : ''; ?>" data-value="true">
+                            <input type="radio" name="correct_answer" autocomplete="off"<?php echo $answer->answer_correction == 'yes' ? ' checked' : ''; ?>> <?php echo $this->t('correct-answer-adj', null, false); ?>
+                        </label>
+                    </div>
+                    <div class="col-xs-4"><a href="#" class="remove_answer"><?php echo $this->t('Remove', null, false); ?></a></div>
+                </div>
+            <?php } ?>
+        <?php } else { ?>
+            <div class="form-group  has-feedback" id="new_answer_model">
+                <label for="answer" class="col-xs-2 control-label">1.</label>
+                <div class="col-xs-9">
+                    <input type="text" class="form-control" name="answer" value="">
+                </div><br><br>
+                <div class="col-xs-8 btn-group" data-toggle="buttons">
+                    <label class="btn btn-default active" data-value="false">
+                        <input type="radio" name="correct_answer" autocomplete="off" checked> <?php echo $this->t('Incorrect answer', null, false); ?>
+                    </label>
+                    <label class="btn btn-default" data-value="true">
+                        <input type="radio" name="correct_answer" autocomplete="off"> <?php echo $this->t('correct-answer-adj', null, false); ?>
+                    </label>
+                </div>
+                <div class="col-xs-4"><a href="#" class="remove_answer btn btn-secondary btn-fancy"><?php echo $this->t('Remove', null, false); ?></a></div>
+            </div>
+        <?php } ?>
+
+        <a href="#" class="add_answer btn btn-secondary btn-fancy"><?php echo $this->t('Add new answer', null, false); ?></a>
+    </div>
+
+    <div class="col-xs-12" id="opened_answers">
+        <div class="form-group form-group-sm" id="new_answer_model">
+            <!-- <label for="answer" class="col-xs-4 control-label">1.</label>
+            <div class="col-xs-8">
+                  <textarea name="answer[]"></textarea>
+            </div> -->
+            <p><?php echo $this->t('One text field will be provided to student to answer this question.', null, false); ?></p>
+        </div>
+    </div>
+</form>

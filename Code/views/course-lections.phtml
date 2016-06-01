@@ -1,0 +1,47 @@
+<p>
+    <?= $this->t('CHOOSE_LESSON', [], false); ?>
+</p>
+<?php if (!empty($this->lessons) && is_array($this->lessons)): ?>
+    <select name="selected_lesson" id="selected_lesson">
+        <?php foreach ($this->lessons as $lesson): ?>
+            <option value="<?= $lesson->id; ?>"><?= $lesson->name; ?></option>
+        <?php endforeach; ?>    
+    </select>
+
+<div class= "quiz_settings">
+    <p class="text-ellipsis"><?= $this->t('NUMBER_OF_TRIES', [], false); ?></p>
+    <a id = "edit-tries" class = "edit" href=""><i class="fa fa-pencil"></i></a>
+    <a id = "hide-tries" class = "edit-hide" href=""><i class="fa fa-times-circle-o"></i></a>
+    <div id = "tries" class ="ckeditor-div" style="display:none">
+        <input id = "quiz-tries" class="quiz-info" value = ""></input>
+    </div>
+    <div id = "tries-div" class = "quiz-info-div">
+        1
+    </div>
+
+   <p class="text-ellipsis"><?= $this->t('DURATION', [], false); ?></p>
+    <a id = "edit-duration" class = "edit" href=""><i class="fa fa-pencil"></i></a>
+    <a id = "hide-duration" class = "edit-hide" href=""><i class="fa fa-times-circle-o"></i></a>
+     <div id = "duration" class ="ckeditor-div" style="display:none">
+        <input id = "quiz-duration" class="quiz-info" value = ""></input>
+    </div>
+    <div id = "duration-div" class = "quiz-info-div">
+       0
+    </div>
+
+    <div class="row mandatory">
+        <input type="checkbox" id="mandatory" name="mandatory" value=""/>
+        <label for="mandatory"><?=$this->t('MANDATORY', [], false);?></label>
+    </div>
+
+    <div class="row disarrange-questions">
+        <input type="checkbox" id="disarrange-questions" name="disarrange-questions" value=""/>
+        <label for="disarrange-questions"><?=$this->t('DISARRANGE_QESTIONS', [], false);?></label>
+    </div>
+
+    <div class="row disarrange-answers">
+        <input type="checkbox" id="disarrange-answers" name="disarrange-answers" value="">
+        <label for="disarrange-answers"><?=$this->t('DISARRANGE_ANSWERS', [], false);?></label>
+    </div>
+</div>
+<?php endif; ?>

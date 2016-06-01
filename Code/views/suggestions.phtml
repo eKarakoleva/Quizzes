@@ -1,0 +1,7 @@
+<?php if (!empty($this->courses)): ?>
+    <ul>
+        <?php foreach ($this->courses as $course): ?>
+            <li><a href="" class="clickedCourse" data-id="<?= $course->id ?>"><?= $course->name; ?></a></li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

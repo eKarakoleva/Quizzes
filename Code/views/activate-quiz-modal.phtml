@@ -1,0 +1,33 @@
+<div class="activate-quiz-container" id="<?= $this->quiz_id ?>">
+    <p><b>Тестът ще бъде активиран</b>
+<br>
+Ако сте готови можете да активирате теста и да го добавите към курс.
+Веднъж активиран, тестът не може да бъде редактиран.
+<br>
+<b>Праг на преминаване</b>
+<br>
+Тестът има назначени максимум <b id="points"><?= $this->quiz_points ?></b> точки
+</p>
+    <div id = "quiz_points" class = "quiz_points">
+        <label ><?php echo $this->t('IN_PERCENT', 0, false); ?>: </label>
+        <input type="checkbox" id="change_assessment" <?= $this->min_type == "percent" ? 'checked' : '' ?>>
+        <div id = "min_div">
+            <div id = "points_number" style = "<?= $this->min_type == "percent" ? 'display:none;' : '' ?>">
+                <label id= "label_percent"><?php echo $this->t('MIN_POINTS', 0, false); ?></label>
+                <input id = "min" placeholder="MIN points" value="<?= $this->min_type == "number" ? $this->min_points : 0 ?>">
+            </div>
+            
+
+            <div id = "points_percent" style = "<?= ($this->min_type == "number" || empty($this->min_type)) ? 'display:none;' : '' ?>">
+                <label id= "label_number"><?php echo $this->t('MIN_PERCENT', 0, false); ?></label>
+                <input id = "min_percent" placeholder="MIN percent" value="<?= $this->min_type == "percent" ? $this->min_points : 0 ?>">
+            </div>
+            
+
+        </div>
+        <br>
+    </div>
+    
+    
+
+</div>

@@ -1,0 +1,177 @@
+<button id = "back_button_quiz" quiz_id="<?php echo($this->quiz_id) ?>" type="button"><?= $this->t('BACK', [], false); ?></button>
+
+<button type="button" class="edit-quiz-info" id = "<?= isset($this->quiz->id) ? $this->quiz->id : '' ?>"><?= $this->t('EDIT', [], false); ?></button>
+
+<a href="#" class="btn btn-link btn-sm" data-quiz_id="<?php echo($this->quiz_id) ?>"  data-active = "<?= $this->quiz->active ?>" data-toggle="modal" data-target="#activate-quiz-modal">
+<?= $this->t('ACTIVATE_QUIZ', [], false); ?>
+</a>
+<!--do not delete this div-->
+<div id = "active_state" data-active = "<?= $this->quiz->active ?>" data-courses-exist = "<?=$this->courses_exist?>" hidden="true"></div>
+<?php
+if($this->quiz->active == 1){
+?><button type="button" id="deactivate-quiz" data-id = "<?= isset($this->quiz->id) ? $this->quiz->id : '' ?>"><?= $this->t('DEACTIVATE_QUIZ', [], false); ?></button><?php
+}
+
+?>
+<div class="quiz_details">
+
+    <div class="form-group  has-feedback">
+        <label for="quiz_type" class="col-xs-2 control-label"><?php echo $this->t('QUIZ_TYPE', 0, false); ?></label>
+            <select name="quiz[type]" id="quiz_type">
+                <option value="entry-level" <?= isset($this->form->type) || $this->quiz->type == "entry-level"? 'selected' : '';?>><?= $this->t('entry-level', [], false); ?></option>
+                <option value="mid-term" <?= isset($this->form->type) || $this->quiz->type == "mid-term" ? 'selected' : '';?>><?= $this->t('mid-term', false); ?></option>
+                <option value="end-level" <?= isset($this->form->type) || $this->quiz->type == "end-level" ? 'selected' : ''; ?>><?= $this->t('end-level', [], false); ?></option>
+            </select>
+    </div>
+
+
+    <h3 class="dashboard-title text-ellipsis"><?= $this->t('QUIZ', 0, false); ?></h3>
+    <a id = "edit-name" class = "edit" href=""><i class="fa fa-pencil"></i></a>
+    <a id = "hide-name" class = "edit-hide" href=""><i class="fa fa-times-circle-o"></i></a>
+    <div id = "name" class ="ckeditor-div" style="display:none">
+        <textarea id = "quiz-name" class="quiz-info"><?= isset($this->quiz->name) ? $this->quiz->name : '' ?></textarea>
+    </div>
+    <div id = "name-div" class = "quiz-info-div">
+       <?= isset($this->quiz->name) ? $this->quiz->name : '' ?>
+    </div>
+    <hr>
+    <p class="text-ellipsis"><?= $this->t('DESCRIPTION', [], false); ?></p>
+    <a id = "edit-description" class = "edit" href=""><i class="fa fa-pencil"></i></a>
+    <a id = "hide-description" class = "edit-hide" href=""><i class="fa fa-times-circle-o"></i></a>
+    <div id = "description" class ="ckeditor-div" style="display:none">
+        <textarea id = "quiz-description" class="quiz-info"><?= isset($this->quiz->description) ? $this->quiz->description : '' ?></textarea>
+    </div>
+    <div id = "description-div" class = "quiz-info-div">
+       <?= isset($this->quiz->description) ? $this->quiz->description : '' ?>
+    </div>
+    <p class="text-ellipsis"><?= $this->t('INSTRUCTION', [], false); ?></p>
+    <a id = "edit-instruction" class = "edit" href=""><i class="fa fa-pencil"></i></a>
+    <a id = "hide-instruction" class = "edit-hide" href=""><i class="fa fa-times-circle-o"></i></a>
+    <div id = "instruction" class ="ckeditor-div" style="display:none">
+        <textarea id = "quiz-instruction" class="quiz-info"><?= isset($this->quiz->instruction) ? $this->quiz->instruction : '' ?></textarea>
+    </div>
+    <div id = "instruction-div" class = "quiz-info-div">
+        <?= isset($this->quiz->instruction) ? $this->quiz->instruction : '' ?>
+    </div>
+
+    <?php
+    if($this->quiz->active == 1){
+    ?>
+        <div><p id = "total-quiz-points-top"><?= $this->t('MAX_POINTS', null, false);?>: <?=$this->quiz->quiz_points?></p></div>
+        <div><p id = "min-quiz-points-top"><?=$this->quiz->min_type == "number" ? $this->t('MIN_POINTS', null, false) : $this->t('MIN_PERCENT', null, false)?>: <?=$this->quiz->min_points?></p></div>
+    <?php
+    }
+    ?>
+    <div id="question-types" quiz_id="<?php echo($this->quiz_id) ?>">
+    <div class="drag_question_type" id ="dropid" onclick="" q-type = "multichoice" style="padding:50px; border-style: solid;
+         margin: 20px; height: 40px; width: 100px; display: inline-block; white-space: nowrap;">
+         <?= $this->t('MULTICHOICE', [], false); ?>
+    </div>
+
+    <div class="drag_question_type" id ="dropid" q-type ="radio" style="padding:50px; border-style: solid;
+         margin: 20px; height: 40px; width: 100px; display: inline-block; white-space: nowrap;">
+         <?= $this->t('SINGLECHOICE', [], false); ?>
+    </div>
+
+    <div class="drag_question_type" id ="dropid" q-type ="open" style="padding:50px; border-style: solid;
+         margin: 20px; height: 40px; width: 100px; display: inline-block; white-space: nowrap;">
+         <?= $this->t('OPEN', [], false); ?>
+    </div>
+
+    <div class="drag_question_type" id ="dropid" q-type ="open-choices" style="padding:50px; border-style: solid;
+         margin: 20px; height: 40px; width: 100px; display: inline-block; white-space: nowrap;">
+         <?= $this->t('OPEN_WITH_CHOICES', [], false); ?>
+    </div>
+</div>
+
+<ul class = "drop_area" quiz_id="<?= $this->quiz_id ?>"><br>
+    <?php
+$total_points = 0;
+if(!empty($this->questions)){
+
+    foreach ($this->questions as $question):
+
+
+        $question_id = $question['question']->id;
+        $question_name = $question['question']->question;
+        $question_type = $question['question']->type;
+
+        ?>
+        <div class="add_q" id = "item-<?php echo(isset($question_id) ? $question_id : 0); ?>" data-q_id="<?php echo(isset($question_id) ? $question_id : 0); ?>"
+             value="<?php echo(isset($question_name) ? htmlspecialchars($question_name) : ''); ?>">
+            <li>
+                <?php
+
+                echo '<p><b>' . $question_name . '</b></p>';
+                echo '<p>' . $this->t($question_type, null, false); '</p>';
+
+                ?>
+                <p style = "display: inline-block; white-space: nowrap;"><?=$this->t('QUESTION_POINTS', null, false);?>:</p>
+                <div class = "points-question" style = "display: inline-block; white-space: nowrap;"><p><?=  $question['question']->points?></p></div>
+                <?php
+                $total_points += $question['question']->points;
+                if (is_array($question['answers']) && !empty($question['answers'])) {
+                    echo '<ol>';
+                    foreach ($question['answers'] as $answer) {
+                        switch ($question_type) {
+                            case "multichoice":
+                                echo('<p style = "display: inline-block; white-space: nowrap;">'.$answer->number.'.'.'</p>');
+                                echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                                if($answer->correct == 1){
+                                    echo(' ');
+                                    echo '<div style = "display: inline-block; white-space: nowrap;">/'. $answer->points ." ".$this->t('POINTS', null, false).'/</div>';
+                                }
+                                echo('<br>');
+                                break;
+                            case "radio":
+                                 
+                                 if($answer->correct == 1){
+                                    echo(' ');
+                                    echo '<div style = "display: inline-block; white-space: nowrap;">/'. $answer->points ." ".$this->t('POINTS', null, false).'/</div>';
+                                }
+                                echo('<br>');
+                                echo('<p style = "display: inline-block; white-space: nowrap;">'.$answer->number.'.'.'</p>');
+                                echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                                break;
+                            case "open":
+                                echo "OPEN QUESTION";
+                                break;
+                            case "open-choices":
+                                echo('<p style = "display: inline-block; white-space: nowrap;">'.$answer->number.'.'.'</p>');
+                                echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->choice . '</li>';
+                                echo '<div style = "display: inline-block; white-space: nowrap;">'."/". $answer->points ." ".$this->t('POINTS', null, false).'/</div>';
+                                echo "<br>";
+                                break;
+                        }
+                    }
+                    echo '</ol>';
+                }
+                ?>
+            
+                <div class="modal-footer">
+                <a href="" class="btn btn-default-edit" data-q_id = "<?php echo(isset($question_id) ? $question_id : 0); ?>"
+                            data-quiz_id = "<?php echo(isset($this->quiz_id) ? $this->quiz_id : 0); ?>"
+                            value=" <?= isset($question_name) ? htmlspecialchars($question_name) : ''; ?>"
+                            data-dismiss="modal"><i class="fa fa-pencil"></i></a>
+                <a href="" data-id="t1"class="btn-default-delete" data-q_id = "<?= $question_id ? $question_id : 0; ?>"
+                            data-quiz_id = "<?= isset($this->quiz_id) ? $this->quiz_id : 0; ?>"><i class="fa fa-trash"></i></a>
+                 <a href="" data-quiz_id = "<?= isset($this->quiz->id) ? $this->quiz->id : '' ?>" data-q_id = "<?php echo(isset($question_id) ? $question_id : 0); ?>" id="copy-question"><i class="fa fa-files-o"></i></a>
+                    
+                </div>
+            </li>
+        </div>
+
+    <?php endforeach;
+}
+?>
+<p id = "total-quiz-points"><?= $this->t('MAX_POINTS', null, false);?>: <?=$total_points ?></p>
+
+</ul>
+
+<?php
+
+$this->getHelper('Modal')->Modal(array('modal_id' => 'activate-quiz-modal',
+    'modal_title' => $this->t('QUIZ_ACTIVATION', null, false),
+    'modal_buttons' => array(array('title' => $this->t('ACTIVATE_QUIZ', null, false),
+            'extra_css_class' => 'btn-danger'))));
+

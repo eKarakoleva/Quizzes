@@ -1,0 +1,14 @@
+<?php include 'mail-header.phtml'; ?>
+
+<table style="width: 100%;">
+	<tr>
+		<td class="container" style="display:block!important ;max-width:600px;	margin:0 auto !important;clear:both;" >
+
+			<p style="font-size:14px;">
+				Резултатът от тест към курс, <b><?= $this->course_name ?></b>, е <b><?=$grade_title?> <?= $this->grade ?></b>. Прегледайте теста <a href='https://ekarakoleva.hq.proznanie.info/quiz_gradebook/public/quiz/grade/<?= $this->quiz_id ?>/<?= $this->user_id ?>/<?=$this->try_id?>'>тук</a>.
+			</p>
+		</td>
+	</tr>
+</table><!-- /BODY -->
+
+<?php include 'mail-footer.phtml'; ?>

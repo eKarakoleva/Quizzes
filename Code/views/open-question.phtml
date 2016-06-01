@@ -1,0 +1,75 @@
+<button id="back_button" type="button" data-quiz-id = "<?= $this->id; ?>"><?= $this->t('BACK', [], false); ?></button>
+<form action="" id ="new_question" method="post">
+    <div>
+        <label for="name"><?= $this->t('QUESTION', [], false); ?></label>
+        <textarea type="text" id="question" name="question" data-type="<?php echo $this->type ?>" placeholder="<?= $this->t('QUESTION', [], false); ?>"></textarea>
+
+        <?php if ($this->type != "open" && $this->type != "open-choices"): ?>
+            <label for="points"><?= $this->t('POINTS', [], false); ?></label>
+            <input id="question-points" name="question-points"  style="display: inline-block; white-space: nowrap;">
+        <?php endif; ?>				
+        
+        <?php if ($this->type == "open"): ?>
+            <input id="question-points" name="question-points"  style="display: inline-block; white-space: nowrap;">
+        <?php endif; ?>				
+    </div>
+
+    <?php if ($this->type != "open"): ?>
+        <button class="add_field_button"><?= $this->t('ADD_MORE_FIELDS', [], false); ?></button><br>
+    <?php endif; ?>	
+
+    <div class="input_fields_wrap">
+        <?php
+
+        switch ($this->type) {
+            case "multichoice":
+
+                ?>
+                <div class="portlet-header" id ="item-1">
+                    <input id="answer-status" type="checkbox" name = "1" style = "display: inline-block; white-space: nowrap;">
+                    <textarea id="answer_1" type="text" class="answers" name="answer_1" placeholder = "Answer" style = "display: inline-block; white-space: nowrap;">Default answer value</textarea>
+                    <div id="answer-point" name="answer_1">0</div>
+                    <div class="holder"><?= $this->t('DRAG', [], false); ?></div>
+                </div>
+                <?php
+
+                break;
+            case "radio":
+
+                ?>
+                <div class = "portlet-header" id = "item-1">
+                    <input id = "answer-status" type = "<?php echo $this->type ?>" name = "1" style = "display: inline-block; white-space: nowrap;">
+                    <textarea id = "answer_1" type = "text" class = "answers" name = "answer_1" placeholder = "Answer" style = "display: inline-block; white-space: nowrap;">Default answer value</textarea>
+                    <div id="answer-point" name="answer_1">0</div>
+                    <div class = "holder"><?= $this->t('DRAG', [], false); ?></div>
+                </div>
+                <?php
+
+                break;
+            case "open":
+                echo ("<br>");
+                echo "Ученикът ще има едно текстово поле да отговори на този въпрос";
+                break;
+            case "open-choices":
+                echo ("<br>");
+
+                ?>
+                <div class="portlet-header" id='item-1'>
+                    <textarea id ="answer_1" class="answers" data-open="open-choices" type="text" name="answer_1" placeholder = "answer" ></textarea>
+                    <input id="answer-points" name = "1" style = "display: inline-block; white-space: nowrap;">
+                    <a href="#" class="remove_field"><?= $this->t('REMOVE', [], false); ?></a>
+                    <div class="holder"><?= $this->t('DRAG', [], false); ?></div>
+                </div>
+                <?php
+
+                break;
+        }
+
+        ?>				
+    </div>
+
+    <input type="hidden" name="quiz_id" id="quiz_id" value="<?= $this->id; ?>"/>
+</form>
+<div class="button">
+    <button id="submitNewQuestion"><?= $this->t('SAVE', [], false); ?></button>
+</div>

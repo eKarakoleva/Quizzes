@@ -1,0 +1,15 @@
+<?php include 'mail-header.phtml'; ?>
+
+<table style="width: 100%;">
+	<tr>
+		<td class="container" style="display:block!important ;max-width:600px;	margin:0 auto !important;clear:both;" >
+
+			<p style="font-size:14px;">
+				Имате активен тест с име <b><?= $this->quiz_name ?></b> към курса <b><?= $this->course_name ?></b>, след урок <b><?= $this->lesson_name ?></b>.<br>
+        Моля да решите теста,в най-кратък срок.
+			</p>
+		</td>
+	</tr>
+</table><!-- /BODY -->
+
+<?php include 'mail-footer.phtml'; ?>

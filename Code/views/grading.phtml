@@ -1,0 +1,250 @@
+<div quiz_id = "<?= $this->quiz_id?>" course_id = "<?= $this->course_id?>" class = "quiz-name section-title" status = "<?= $this->status?>" >
+    <h1 class="h3">
+        <strong><?=$this->student_name[0]->fname?> <?=$this->student_name[0]->lname?></strong>
+    </h1>
+    <p class="h4"><?= $this->quiz->name ?></p>
+</div>
+
+<hr>
+<section class="push-double-bottom">
+    <p>
+        <strong><?=$this->t('STUDENT_NAME', [], false);?>:</strong>
+        <?=$this->student_name[0]->fname?> <?=$this->student_name[0]->lname?>
+    </p>
+    <p>
+        <strong><?=$this->t('TOTAL_SUDENT_POINTS', [], false); ?></strong>
+        <?=$this->student_points ?>/<?= $this->quiz->quiz_points ?>
+
+        <em class="action-link">
+            ( <?=$this->t('MINIMUM', [], false); ?>
+            <?= $this->quiz->min_points ?> 
+            <?php if($this->quiz->min_type == "number"){ echo $this->t('POINTS', [], false); }else{ echo$this->t('PERCENT', [], false);?> = <?php echo ($this->quiz->min_points/100)*$this->quiz->quiz_points;?> 
+            <?= $this->t('POINTS', [], false);}?>
+            )
+        </em>
+    </p>
+
+    <?php if($this->grade != 0){?>
+        <div><strong><?=$this->t('SUDENT_GRADE', [], false); ?>: <span class="action-link"><?=$this->grade ?></span></strong></div>
+    <?php } ?>
+
+    <button id="hide-graded-questions" class="btn btn-primary push-top"><?=$this->t('HIDE_EVALUATED_QUESTIONS', [], false); ?></button>
+</section>
+
+<section>
+    <p id="change_text" hidden="true"><?=$this->t('SHOW_EVALUATED_QUESTIONS', [], false); ?></p>
+    <?php
+    $points = 0;
+        foreach($this->questions as $question){
+            $question_id = $question['question']->id;
+            $question_name = $question['question']->question;
+            $question_type = $question['question']->type;
+            ?>
+          
+    <article id = "<?= $question_id ?>" class = "push-bottom question-name" data-type = "<?=  $question_type ?>">
+        <strong><?= $question_name ?></strong>
+        <div class = "hide-close-questions">
+            <p class="question-type <?php echo $question_type;?>">
+                <?php echo $this->t(strtoupper($question_type), null, false);?>
+            </p>
+
+            <?php
+
+                if (is_array($question['answers']) && !empty($question['answers']) && isset($this->closeAnswers[$question_type][$question_id])) {
+                    
+                    foreach ($question['answers'] as $answer) {
+                        switch ($question_type) {
+                            case "multichoice":
+                                    $points = CheckAnswers($question,$answer, $question_type, $question_id, $this->closeAnswers,$this->t('TRUE', [], false),$this->t('FALSE', [], false),$this->t('CHOOSEN_BY_STUDENT', [], false));
+                                    $q_points = 0;
+                                break;
+                            case "radio":  
+                                    $points = CheckAnswers($question,$answer,$question_type, $question_id, $this->closeAnswers,$this->t('TRUE', [], false),$this->t('FALSE', [], false),$this->t('CHOOSEN_BY_STUDENT', [], false));
+                                break;
+                        }
+                    }
+
+                    if($question_type != "open-choices"){
+                        $q_points = 0;
+                        foreach($this->closeAnswers[$question_type][$question_id] as $answer_id => $answer_info){
+                            $q_points += $answer_info['points'];
+                        }
+                        ?>
+                        <hr style="margin-bottom:5px;">
+                        <div class="text-right"><?= $this->t('QUESTION_POINTS', [], false);?>:<strong> <?= $q_points ?></strong></div>
+                        <?php
+                    }
+                }
+        ?>
+        </div>
+
+        <?php
+            if($question_type == "open-choices"){
+                if (isset($this->closeAnswers[$question_type][$question_id]['points'])) { ?>
+                    <div>
+                        <?= $this->t('QUESTION_POINTS', [], false);?>: <?= $this->closeAnswers[$question_type][$question_id]['points']?>
+                    </div>
+                <?php } else { ?>
+                    <div><?= $this->t('QUESTION_POINTS', [], false);?>: 0</div>
+                    
+                <?php } if (array_key_exists($question['question']->id, $this->closeAnswers[$question_type]) && isset($this->closeAnswers[$question_type][$question['question']->id]['answer'])) {
+                    ?>
+                    <div class="row push-top">
+                        <div class="col-md-6">
+                            <strong><?php echo $this->t('ANSWER', [], false);?></strong>
+                            <div class = "solved-open text-area-box" question-type = "<?= $question_type ?>"><?= $this->closeAnswers[$question_type][$question['question']->id]['answer'] != "" ? $this->closeAnswers[$question_type][$question['question']->id]['answer'] : $this->t('NO_ANSWER', [], false);?>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong><?php echo $this->t('YOUR_QUIZ_REVIEW', [], false);?></strong>
+                            <a data-id = "<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class = "comment-view" href=""><i class="fa fa-pencil"></i></a>
+                            <a data-id = "<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class = "comment-hide" href=""><i class="fa fa-times-circle-o"></i></a>
+                            <?php if($this->status == 2){?>
+                                <textarea id = "<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class = "comment"></textarea>
+                            <?php
+                            }
+                            ?>
+                            <p hidden="true" id="translated_no_comment"><?=$this->t('NO_COMMENT_IS_LEFT', [], false)?></p>
+                            <div id = "<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class = "grade"><?= $this->comments[$question['question']->id] ? $this->comments[$question['question']->id] : $this->t('NO_COMMENT_IS_LEFT', [], false); ?></div>
+                            <?php echo "<br>";?>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p answer-id="<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class="max-points"><?= $this->t('EVALUATE_ANSWER', [], false) ?> (0 - <?= $this->closeAnswers[$question_type][$question['question']->id]['max_points']. ' ' . mb_strtolower($this->t('POINTS',[], false)); ?>)</p>
+                        <input answer-id="<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" max-points = "<?= $this->closeAnswers[$question_type][$question['question']->id]['max_points'] ?>" class = "grade-answers" placeholder="<?=$this->t('QUESTION_GRADE', [], false);?>" value = "<?= $this->closeAnswers[$question_type][$question['question']->id]['points'] ?>">
+                    </div>
+                    <?php                 
+                }else{
+                    ?><div><?=$this->t('ANSWER_IS_NOT_FOUND', [], false); ?></div><?php
+                }
+            }
+            if($question_type == "open"){
+                if(isset($this->closeAnswers[$question_type][$question['question']->id]['points'])){ ?>
+                        <div>
+                            <?= $this->t('QUESTION_POINTS', [], false);?>: <?= $this->closeAnswers[$question_type][$question['question']->id]['points'] ?>
+                        </div>
+                <?php } else { ?>
+                    <div>
+                        <?= $this->t('QUESTION_POINTS', [], false);?>: 0
+                    </div>
+                <?php } if (array_key_exists($question['question']->id, $this->closeAnswers[$question_type]) && isset($this->closeAnswers[$question_type][$question['question']->id]['answer'])) {
+                    
+                    ?>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6" >
+                            <strong><?php echo $this->t('ANSWER', [], false);?></strong>
+                            <div class = "solved-open text-area-box" question-type = "<?= $question_type ?>">
+                                <?= $this->closeAnswers[$question_type][$question['question']->id]['answer'] != "" ? $this->closeAnswers[$question_type][$question['question']->id]['answer'] : $this->t('NO_ANSWER', [], false);?>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong><?php echo $this->t('YOUR_QUIZ_REVIEW', [], false);?></strong>
+                            <a data-id = "<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class = "comment-view" href=""><i class="fa fa-pencil"></i></a>
+                            <a data-id = "<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class = "comment-hide" href=""><i class="fa fa-times-circle-o"></i></a>
+                            <?php
+                            if($this->status == 2){
+                            ?>
+                                <textarea id = "<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class = "comment form-control"></textarea>
+                            <?php
+                            }
+                            ?>
+                            <div id = "<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class = "grade "><?= $this->comments[$question['question']->id] ? $this->comments[$question['question']->id] : $this->t('NO_COMMENT_IS_LEFT', [], false); ?></div>
+                            <?php echo "<br>";?>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div answer-id="<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" class="max-points"><?= $this->t('EVALUATE_ANSWER', [], false) ?> (0 - <?= $this->closeAnswers[$question_type][$question['question']->id]['max_points'] . ' ' . mb_strtolower($this->t('POINTS', [], false)); ?> )
+                        </div>
+                        <input answer-id="<?= $this->closeAnswers[$question_type][$question['question']->id]['id'] ?>" max-points = "<?= $this->closeAnswers[$question_type][$question['question']->id]['max_points'] ?>" class = "grade-answers" placeholder="<?=$this->t('QUESTION_GRADE', [], false);?>" value = "<?= $this->closeAnswers[$question_type][$question['question']->id]['points']?>">
+                        </div>
+                    <?php 
+                }else{
+                    ?><div><?=$this->t('ANSWER_IS_NOT_FOUND', [], false); ?></div><?php
+                }
+            }
+    ?>
+    </article>
+
+</section>
+
+<?php
+}
+?>
+    <p>
+        <strong><?=$this->t('QUIZ_COMMENT', [], false); ?></strong>
+    </p>
+    <a data-id = "0" class = "comment-view" href=""><i class="fa fa-pencil"></i></a>
+    <a data-id = "0" class = "comment-hide" href=""><i class="fa fa-times-circle-o"></i></a>
+    <?php if($this->status == 2){ ?>
+        <textarea id = "0" class = "comment"></textarea>    
+    <?php
+            }
+    ?>
+    <div id = "0" class = "grade text-area-box" ><?= $this->teacher_comment ? $this->teacher_comment : $this->t('QUIZ_COMMENT', [], false); ?></div>
+    <br>
+    <button try_id = "<?= $this->try_id?>" class = "grade_quiz btn btn-primary push-bottom">SAVE</button>
+    
+<?php
+
+    function CheckAnswers($question, $answer, $question_type, $question_id, $closeAnswers = array(),$true,$false,$student_answer){
+        $points = 0;
+        if(isset($closeAnswers[$question_type])){
+            if (array_key_exists($question['question']->id, $closeAnswers[$question_type])) {
+                if(isset($closeAnswers[$question_type][$question['question']->id])){
+                    if(array_key_exists($answer->id, $closeAnswers[$question_type][$question_id])){
+                        if($closeAnswers[$question_type][$question_id][$answer->id]['correct'] == $answer->correct){
+                            //anser is true
+                            if($closeAnswers[$question_type][$question_id][$answer->id]['correct'] == 1){
+                                ?><input data-a-id="<?= $answer->id ?>" class = "solved-answers" type="<?= ($question_type == "multichoice") ? "checkbox": $question_type ?>" disabled="disabled" checked style = "display: inline-block; white-space: nowrap;"><?php
+                                echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                                $points += $closeAnswers[$question_type][$question_id][$answer->id]['points'];
+                                echo ' <p style = "display: inline-block; white-space: nowrap; color: green">/'. $true .'/</p>'; //.' = '.$closeAnswers[$question_type][$question_id][$answer->id]['points'].' POINTS';
+                                echo('<br>');
+                               
+                            }else{
+                                ?><input data-a-id="<?= $answer->id ?>" class = "solved-answers" type="<?= ($question_type == "multichoice") ? "checkbox": $question_type ?>" disabled="disabled" checked style = "display: inline-block; white-space: nowrap;"><?php
+                                echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                                echo ' <p style = "display: inline-block; white-space: nowrap; color: red">/'. $student_answer .'/</p>';
+                                echo('<br>');
+                            }
+                        }else{
+                            //anser is not true
+                            ?><input data-a-id="<?= $answer->id ?>" class = "solved-answers" type="<?= ($question_type == "multichoice") ? "checkbox": $question_type ?>" disabled="disabled" checked style = "display: inline-block; white-space: nowrap;"><?php
+                            echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                            echo '<p style = "display: inline-block; white-space: nowrap; color: red">/'. $student_answer .' /</p>';
+                            echo('<br>');
+                        }
+                    }else{
+                        //answer is not true
+                        if($answer->correct == 1){
+                            ?><input data-a-id="<?= $answer->id ?>" class = "solved-answers" type="<?= ($question_type == "multichoice") ? "checkbox": $question_type ?>" disabled="disabled" style = "display: inline-block; white-space: nowrap;"><?php
+                            echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                            echo ' <p style = "display: inline-block; white-space: nowrap; color: green">/'. $true .'/</p>';
+                            echo('<br>');
+                        }else{
+                            ?><input data-a-id="<?= $answer->id ?>" class = "solved-answers" type="<?= ($question_type == "multichoice") ? "checkbox": $question_type ?>" disabled="disabled" style = "display: inline-block; white-space: nowrap;"><?php
+                            echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                            echo('<br>');
+                        }
+                    }
+                }
+                                
+            }else{
+                    if($answer->correct == 1){
+                        ?><input data-a-id="<?= $answer->id ?>" class = "solved-answers" type="<?= ($question_type == "multichoice") ? "checkbox": $question_type ?>" disabled="disabled" style = "display: inline-block; white-space: nowrap;"><?php
+                            echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                            echo ' <p style = "display: inline-block; white-space: nowrap; color: green">/'. $true .'/</p>';
+                            echo('<br>');
+                    }else{
+                        ?><input data-a-id="<?= $answer->id ?>" class = "solved-answers" type="<?= ($question_type == "multichoice") ? "checkbox": $question_type ?>" disabled="disabled" style = "display: inline-block; white-space: nowrap;"><?php
+                        echo '<li style = "display: inline-block; white-space: nowrap;">' . $answer->answer . '</li>';
+                        echo('<br>');
+                    }
+                }
+        }
+        return $points;
+    
+    }
+
+?>

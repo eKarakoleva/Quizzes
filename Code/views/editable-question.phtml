@@ -1,0 +1,77 @@
+<button id = "back_button" type="button" data-quiz-id="<?= $this->question->quiz_id; ?>"><?= $this->t('BACK', [], false); ?></button>
+
+<form action="" id="edit_question" method="post">
+    <div>
+        <label for="name"><?= $this->t('QUESTION', [], false); ?></label>
+        <textarea type="text" question-id="<?= $this->question->id; ?>" id="question" name="question" data-type="<?= $this->question->type ?>" placeholder="<?= $this->t('QUESTION', [], false); ?>"><?= $this->question->question; ?></textarea>
+        
+        <?php if ($this->question->type != "open-choices"): ?>
+             <label for="name"><?= $this->t('POINTS', [], false); ?></label>
+           <input id="question-points" name="question-points"  style = "display: inline-block; white-space: nowrap;" value ="<?= $this->question->points; ?>">
+        <?php endif; ?>
+
+    </div>
+    <?php if ($this->question->type != "open"): ?>
+        <button class="add_field_button"><?= $this->t('ADD_MORE_FIELDS', [], false); ?></button>
+    <?php endif; ?>
+    <div class="input_fields_wrap">
+        <?php
+
+        $type = $this->question->type;
+
+        switch ($this->question->type) {
+            case "multichoice":
+                $type = 'checkbox';
+            case "radio":
+
+                if (is_array($this->answers) && !empty($this->answers)):
+                    foreach ($this->answers as $number => $answer):
+
+                        ?>
+                        <li id = "item-<?php echo $answer->id ?>">
+                            <div class="portlet-header" >
+                                <input id="answer-status" type="<?= $type ?>" name="<?= $answer->id; ?>" <?= $answer->correct == 0 ? "notchecked" : "checked"; ?> style = "display: inline-block; white-space: nowrap;">
+                                <textarea id="answers_<?= $answer->id; ?>" class="answers" type="text" name="<?php echo $answer->id; ?>" value="<?php echo $answer->answer; ?> " style = "display: inline-block; white-space: nowrap;"><?= $answer->answer; ?></textarea>
+                                <div id="answer-point" name="<?php echo $answer->id; ?>"><?php echo $answer->points; ?></div>
+                                <button type="button" class="delete-answer" data-id="<?= isset($answer->id) ? $answer->id : 0; ?>" style="display: inline-block; white-space: nowrap;"><?= $this->t('DELETE', [], false); ?></button>
+                                <div class="holder"><?=$this->t('DRAG', [], false);?></div>
+                            </div>
+                        </li>
+                        <?php
+
+                    endforeach;
+                endif;
+                break;
+            case "open":
+                echo ("<br>");
+                echo "Ученикът ще има едно текстово поле да отговори на този въпрос";
+                echo ("<br>");
+                break;
+            case "open-choices":
+                if (is_array($this->answers) && !empty($this->answers)):
+                    foreach ($this->answers as $number => $answer):
+
+                        ?>
+                        <li id = "item-<?php echo $answer->id ?>">
+                            <div class="portlet-header">
+                                <textarea id="answers_<?= $answer->id; ?>" data-open="open-choices" class = "answers" type="text" name="<?php echo $answer->id; ?>" value="<?php echo $answer->choice; ?> " style = "display: inline-block; white-space: nowrap;"><?php echo $answer->choice; ?></textarea>
+                                <button type="button" class="delete-answer" data-id = "<?php echo(isset($answer->id) ? $answer->id : 0); ?>" style = "display: inline-block; white-space: nowrap;">Delete</button>
+                                <input id="answer-points" name="<?php echo $answer->id; ?>" value="<?php echo $answer->points; ?> " style = "display: inline-block; white-space: nowrap;">
+                                <div class="holder"><?= $this->t('DRAG', [], false); ?></div>
+                            </div>
+                        </li>
+                        <?php
+
+                    endforeach;
+                endif;
+                break;
+        }
+
+        ?>
+
+    </div>
+</form>
+
+<div class="button">
+    <button id="submitEditQuestion"><?= $this->t('SAVE', [], false); ?></button>
+</div>

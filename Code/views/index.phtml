@@ -1,0 +1,138 @@
+<div class="dashboard">
+    <div class="container">
+        <div class="col-xs-10 col-sm-9 col-lg-10">
+            <h3 class="dashboard-title"><?php echo $this->t('Quiz', 0, false); ?></h3>
+            <p><?= $this->t('LOREM_IPSUM', [], false); ?><p>
+            <hr>
+            <div id="quizeslist">
+                <div class="crud">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <a href="#" data-toggle="modal" id="create-quiz"  class="btn btn-secondary fancy-btn"><?php echo $this->t('Create а new quiz', null, false); ?></a>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group  has-feedback">
+                                <input type="text" value="" class="form-control search" placeholder="<?php echo $this->t('Searching', 0, false); ?>">
+                                <button type="submit" class="btn btn-link form-control-feedback">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 form-group">
+                            <select class="form-control limit">
+                                <option value="1">1</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20" selected="selected">20</option>
+                                <option value="30">30</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 form-group">
+                            <select class="form-control input-sm sort">
+                                <option value="asc" data-id="0" selected="selected">Дата възх.</option>
+                                <option value="desc" data-id="0">Дата низх.</option>
+                            </select> 
+                        </div>
+                        <div class="col-lg-2 form-group">
+                            <select class="form-control input-sm filter" data-id="0">
+                                <option value=""><?= $this->t('SELECT', [], false); ?></option>
+                                <option value="1" data-id="0"><?= $this->t('ACTIVE', [], false); ?></option>
+                                <option value="0" data-id="0"><?= $this->t('NOT_ACTIVE', [], false); ?></option>
+                            </select> 
+                        </div>
+                    </div> <!-- row -->
+                </div> <!-- crud -->
+                <div class="list-group item_append">
+                    <div class="col-lg-12 text-center crud-loader"><i class="fa fa-circle-o-notch fa-spin fa-2x"></i></div>
+                    <div class="col-lg-12 item_template list-group-item" data-item_id="t1">
+                        <div class="row col-lg-3 pull-left">
+                            <a href="<?php echo $this->url(array('id' => 't1'), 'quiz_view'); ?>" class="col-lg-6 text-ellipsis">t2</a>
+                            <a href="" data-id="t1" data-checked="false" class="related_courses"><?= $this->t('SEE_RELATED_COURSES'); ?></a>
+                        </div>
+                        <div class="row col-lg-2 pull-left">
+                            t3
+                        </div>
+                        <div class="row col-lg-3 pull-left">
+                            <a href="#" class="btn btn-link btn-sm" data-toggle="modal" data-target="#addCourse" data-id="t1">
+                                <?= $this->t('ADD_TO_COURSE', [], false); ?>
+                            </a>
+                        </div>
+
+                        <div class="row col-lg-4 pull-right">
+                            <a href="<?php echo $this->baseUrl(); ?>/quiz/view/t1" class="col-lg-1"><i class="fa fa-pencil"></i></a>
+                            <a href="" data-id="t1" class="col-lg-1 delete-quiz"><i class="fa fa-trash"></i></a>
+                            <a href="" data-id="t1" data-status="1" data-active = "t4" data-quiz_id = "t1" data-target="#activate-quiz-modal" class="col-lg-1 change-status"><i class="fa fa-check-circle-o"></i></a>
+                            <a href="" data-id="t1" id="copy-quiz" class="col-lg-1"><i class="fa fa-files-o"></i></a>
+                            <a href="" data-id="t1" class="col-lg-1"><i class="fa fa-share-alt-square"></i></a>
+                            <input type="hidden" name="current_status" id="current_status_t1" value="t4"/>
+                        </div>
+                        <div class="related_courses_content_t1" style="display: block;clear: both; display: none;">
+                            t7
+                        </div>
+                    </div>
+
+                </div> <!-- list-group -->
+            </div> <!-- #quizeslist -->
+        </div>
+    </div>
+</div>
+<!-- compose Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><?php echo $this->t('Create а new quiz', null, false) ?></h4>
+            </div>
+            <div class="modal-body">
+                <form  id="quizForm" action="<?= $this->url([], 'create-quiz') ?>" method="post" role="form" class="form-horizontal personal-form" data-toggle="validator">
+                    <div class="form-group  has-feedback">
+                        <label for="quiz_name" class="col-xs-2 control-label"><?php echo $this->t('Quiz name', 0, false); ?></label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="name" name="quiz[name]" value="<?php echo isset($this->form->quiz_name) ? : ''; ?>">
+                        </div>
+                    </div>
+                    <div class="form-group  has-feedback">
+                        <label for="quiz_name" class="col-xs-2 control-label"><?php echo $this->t('Description', 0, false); ?></label>
+                        <div class="col-xs-10">
+                            <textarea class="form-control" name="quiz[description]" id="description"><?php echo isset($this->form->description) ? : ''; ?></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group  has-feedback">
+                        <label for="quiz_name" class="col-xs-2 control-label"><?php echo $this->t('Instruction', 0, false); ?></label>
+                        <div class="col-xs-10">
+                            <textarea class="form-control" name="quiz[instructions]" id="instructions"><?php echo isset($this->form->instructions) ? : ''; ?></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group  has-feedback">
+                        <label for="quiz_type" class="col-xs-2 control-label"><?php echo $this->t('QUIZ_TYPE', 0, false); ?></label>
+                        <select name="quiz[type]" id="quiz_type">
+                            <option value="entry-level" <?= isset($this->form->type) ? 'selected' : ''; ?>><?= $this->t('entry-level', [], false); ?></option>
+                            <option value="mid-term" <?= isset($this->form->type) ? 'selected' : ''; ?>><?= $this->t('mid-term', false); ?></option>
+                            <option value="end-level" <?= isset($this->form->type) ? 'selected' : ''; ?>><?= $this->t('end-level', [], false); ?></option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-secondary create-quiz"><?php echo $this->t('Create quiz', 0, false); ?></button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $this->t('Close', null, false); ?></button>
+                <!-- <button type="button" class="btn btn-primary"><?php echo $this->t('Save', null, false); ?></button> -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<?php
+
+$this->getHelper('Modal')->Modal(array('modal_id' => 'addCourse',
+    'modal_title' => $this->t('QUIZ_ADD_COURSE', null, false),
+    'modal_buttons' => array(array('title' => $this->t('QUIZ_ADD_COURSE_BUTTON', null, false),
+            'extra_css_class' => 'btn-danger'))));
+
+
+$this->getHelper('Modal')->Modal(array('modal_id' => 'activate-quiz-modal',
+    'modal_title' => $this->t('TEST_ACTIVATIONS', null, false),
+    'modal_buttons' => array(array('title' => $this->t('ACTIVATE_TEST', null, false),
+            'extra_css_class' => 'btn-danger'))));
+

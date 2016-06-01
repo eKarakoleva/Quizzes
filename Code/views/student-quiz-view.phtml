@@ -1,0 +1,53 @@
+<div class="dashboard">
+    <div class="container">
+        <div class="col-xs-10 col-sm-9 col-lg-10">
+            <h3 class="dashboard-title"><?php echo $this->t('Quiz', 0, false); ?></h3>
+            <p><?= $this->t('LOREM_IPSUM', [], false); ?><p>
+            <hr>
+            <div id="quizeslist3">
+                <div class="crud">
+                    <div class="list-group item_append">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group  has-feedback">
+                                    <input type="text" value="" class="form-control search" placeholder="<?php echo $this->t('Searching', 0, false); ?>">
+                                    <button type="submit" class="btn btn-link form-control-feedback">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 form-group">
+                                <select class="form-control limit">
+                                    <option value="1">1</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="20" selected="selected">20</option>
+                                    <option value="30">30</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2 form-group">
+                                <select class="form-control input-sm sort">
+                                    <option value="asc" data-id="0"><?php echo $this->t('ASC_LAST_EVALUATED_BY_TEACHER', 0, false); ?></option>
+                                    <option value="desc" data-id="0" selected="selected"><?php echo $this->t('DESC_LAST_EVALUATED_BY_TEACHER', 0, false); ?></option>
+                                    <option value="asc" data-id="1"><?php echo $this->t('ASC_COURSE_NAME', 0, false); ?></option>
+                                    <option value="desc" data-id="1"><?php echo $this->t('DESC_COURSE_NAME', 0, false); ?></option>
+                                    <option value="asc" data-id="2"><?php echo $this->t('ASC_QUIZ_NAME', 0, false); ?></option>
+                                    <option value="desc" data-id="2"><?php echo $this->t('DESC_QUIZ_NAME', 0, false); ?></option>
+                                </select> 
+                            </div>
+                        </div> <!-- row -->
+                        <div class="col-lg-12 text-center crud-loader"><i class="fa fa-circle-o-notch fa-spin fa-2x"></i></div>
+                        <div class="col-lg-12 item_template list-group-item" data-item_id="t1">
+                            <div class="row col-lg-8 pull-left">
+                                <a href="<?php echo $this->url(array('id' => 't1','student_id' => 't3','try_id' => 't2'), 'grading'); ?>" class="col-lg-6 text-ellipsis start-quiz">t4</a>
+                                <p class="col-lg-6 text-ellipsis start-quiz">t5 t6</p>
+                                <p class="col-lg-6 text-ellipsis start-quiz"><?php echo $this->t('TRY_NUMBER', 0, false); ?>: t7</p>
+                                <p class="col-lg-6 text-ellipsis start-quiz"><?php echo $this->t('COURSE', 0, false); ?>: t9</p>
+                            </div>                       
+                        </div>
+                    </div> <!-- list-group -->
+                 </div> <!-- crud -->
+            </div> <!-- #quizeslist -->
+        </div>
+    </div>
+</div>
